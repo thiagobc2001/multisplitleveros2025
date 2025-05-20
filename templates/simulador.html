@@ -86,17 +86,19 @@
   <script>
     let dadosR410A = {}, dadosR32 = {}, gramaturas410 = [], gramaturas32 = [];
 
-    async function carregarDados() {
+   async function carregarDados() {
   const caminho_json = "{{ caminho_json }}";
   const fornecedor = "{{ fornecedor }}";
 
   try {
     let r410a = {}, g410 = [];
+
     if (fornecedor === "Daikin") {
       const daikin = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
       dadosR410A = daikin;
       dadosR32 = {};
       gramaturas32 = [];
+      gramaturas410 = [];
     } else if (fornecedor === "TCL") {
       const r410a = await fetch(caminho_json + "compatibilidade.json").then(r => r.json());
       const g410 = await fetch(caminho_json + "gramaturas.json").then(r => r.json());
@@ -122,28 +124,6 @@
         gramaturas32 = [];
       }
     }
-if (fornecedor === "Daikin") {
-  const daikin = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
-  dadosR410A = daikin;
-;
-
-  dadosR32 = {};
-  gramaturas32 = [];
-
-dadosR410A = r410a;
-gramaturas410 = Array.isArray(g410) ? g410 : [g410];
-
-// Só carrega R32 se for LG
-if (fornecedor === "LG") {
-  const r32 = await fetch(caminho_json + "compatibilidade_r32.json").then(r => r.json());
-  const g32 = await fetch(caminho_json + "gramaturas_r32.json").then(r => r.json());
-  dadosR32 = r32;
-  gramaturas32 = Array.isArray(g32) ? g32 : [g32];
-} else {
-  dadosR32 = {};
-  gramaturas32 = [];
-}
-}
 
     criarInterfaceEvaps();
     atualizarTotal();
@@ -155,10 +135,16 @@ if (fornecedor === "LG") {
 
 
 
-    const btusEvaps = [7000, 9000, 12000, 18000, 24000];
-    const nomesEvaps = {
-      7000: "7.000 BTUs", 9000: "9.000 BTUs", 12000: "12.000 BTUs", 18000: "18.000 BTUs", 24000: "24.000 BTUs"
-    };
+
+const fornecedor = "{{ fornecedor }}";
+const btusEvaps = (fornecedor === "TCL" || fornecedor === "Daikin")
+  ? [9000, 12000, 18000, 24000]
+  : [7000, 9000, 12000, 18000, 24000];
+
+
+const nomesEvaps = {
+  7000: "7.000 BTUs", 9000: "9.000 BTUs", 12000: "12.000 BTUs", 18000: "18.000 BTUs", 24000: "24.000 BTUs"
+};
 
     function criarInterfaceEvaps() {
       const div = document.getElementById("evaporadoras");
