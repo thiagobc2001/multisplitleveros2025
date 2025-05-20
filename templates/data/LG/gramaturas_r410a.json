@@ -1,0 +1,44 @@
+[
+  {
+    "faixa": "18000",
+    "modelo": "A2UW18GFAC",
+    "min": 18000,
+    "max": 24000,
+    "marca": "LG"
+  },
+  {
+    "faixa": "21000",
+    "modelo": "A3UW21GFAC",
+    "min": 21000,
+    "max": 31000,
+    "marca": "LG"
+  },
+  {
+    "faixa": "24000",
+    "modelo": "A3UW24GFA3",
+    "min": 24000,
+    "max": 36000,
+    "marca": "LG"
+  },
+  {
+    "faixa": "30000",
+    "modelo": "A4UW30GFA2",
+    "min": 30000,
+    "max": 51000,
+    "marca": "LG"
+  },
+  {
+    "faixa": "36000",
+    "modelo": "A5UW36GFA2",
+    "min": 36000,
+    "max": 54000,
+    "marca": "LG"
+  },
+  {
+    "faixa": "48000",
+    "modelo": "A5UW48GFA1",
+    "min": 48000,
+    "max": 72000,
+    "marca": "LG"
+  }
+]

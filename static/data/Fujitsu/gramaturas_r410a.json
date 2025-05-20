@@ -1,0 +1,51 @@
+[
+    {
+        "faixa": "18000",
+        "modelo": "AOBG14LAC2",
+        "min": 14000,
+        "max": 21000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "18000",
+        "modelo": "AOBG18LAC2",
+        "min": 14000,
+        "max": 24000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "21000",
+        "modelo": "AOBG18LAT3",
+        "min": 14000,
+        "max": 30000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "24000",
+        "modelo": "AOBG24LAT3",
+        "min": 14000,
+        "max": 36000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "30000",
+        "modelo": "AOBG30LAT4",
+        "min": 27000,
+        "max": 49000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "36000",
+        "modelo": "AOBG36LBTA4",
+        "min": 27000,
+        "max": 49000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "48000",
+        "modelo": "AOBG45LBLA6",
+        "min": 34000,
+        "max": 62000,
+        "marca": "Fujitsu"
+    }
+]
