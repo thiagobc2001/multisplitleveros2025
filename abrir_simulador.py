@@ -12,7 +12,7 @@ CLIENT_SECRET = "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"
 AUTHORIZATION_BASE_URL = "https://accounts.google.com/o/oauth2/auth"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
-REDIRECT_URI = "multisplitleveros2025.onrender.com/callback"
+REDIRECT_URI = "https://multisplitleveros2025.onrender.com/callback"
 SCOPE = [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile"
