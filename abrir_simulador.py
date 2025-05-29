@@ -1,5 +1,5 @@
-"""import os
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'"""
+import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 from flask import Flask, render_template, request, redirect, url_for, session
 from requests_oauthlib import OAuth2Session
 
