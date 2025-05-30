@@ -7,8 +7,8 @@ app = Flask(__name__, static_folder='static')
 app.secret_key = 'b3b0d4523a3fdc6a91ee0f795ad78d33f7c394e2b8328e9c4dd478f97c9f4e7d'  # Altere para algo seguro
 
 # ====== CONFIGURAÇÃO GOOGLE OAUTH ======
-CLIENT_ID = "1067655818198-jl3lb93t5cskctck8jp5bh7sm2decf4s.apps.googleusercontent.com"
-CLIENT_SECRET = "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"
+CLIENT_ID = "GOOGLE_OAUTH_CLIENT_ID"
+CLIENT_SECRET = "GOOGLE_OAUTH_CLIENT_SECRET"
 AUTHORIZATION_BASE_URL = "https://accounts.google.com/o/oauth2/auth"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
