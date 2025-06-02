@@ -170,16 +170,21 @@
     function gerarSubcard(gram, valor, tipo) {
       let cor = "bg-red-100 border-red-400 text-red-700";
       let status = "Incompatível";
-      if (valor && valor !== "X") {
-        const perc = parseInt(valor.replace("%", ""));
-        if (perc > 130) {
-          cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
-          status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
-        } else {
-          cor = "bg-green-100 border-green-400 text-green-700";
-          status = "Compatível";
-        }
-      }
+     if (valor && valor !== "X") {
+  if (valor.includes("Atenção")) {
+    cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
+    status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
+  } else {
+    const perc = parseInt(valor.replace("%", ""));
+    if (!isNaN(perc) && perc > 130) {
+      cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
+      status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
+    } else {
+      cor = "bg-green-100 border-green-400 text-green-700";
+      status = "Compatível";
+    }
+  }
+}
       return `
         <div class="rounded-lg border-l-4 ${cor} p-3">
           <p class="text-sm"><strong>Tipo:</strong> ${tipo}</p>
