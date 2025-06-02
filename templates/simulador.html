@@ -189,19 +189,28 @@
         </div>`;
     }
 
-    function abrirPopup(tipo) {
-      const modal = document.getElementById('popupModal');
-      const title = document.getElementById('popupTitle');
-      const content = document.getElementById('popupContent');
-      if (tipo === 'duvidas') {
-        title.innerText = 'Dúvidas Frequentes';
-        content.innerText = 'Aqui você pode colocar suas dúvidas mais comuns ou informações úteis sobre o simulador!';
-      } else if (tipo === 'atencao') {
-        title.innerText = 'Atenção!';
-        content.innerText = 'Capacidade excedida! A combinação ultrapassou 130% da capacidade recomendada.';
-      }
-      modal.classList.remove('hidden');
-    }
+  function abrirPopup(tipo) {
+  const modal = document.getElementById('popupModal');
+  const title = document.getElementById('popupTitle');
+  const content = document.getElementById('popupContent');
+  
+  if (tipo === 'duvidas') {
+    title.innerText = 'Dúvidas Frequentes';
+    content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>
+    Para utilizar, basta informar a quantidade de evaporadoras necessárias nos campos correspondentes.<br>
+    Logo abaixo, o sistema mostrará automaticamente as condensadoras compatíveis com a sua configuração.<br><br>
+    Em caso de dúvidas, dificuldades ou se encontrar algum bug, entre em contato com o <strong>time de Inteligência Comercial</strong>. Estamos prontos para ajudar!</p>`;
+  } else if (tipo === 'atencao') {
+    title.innerText = 'Atenção!';
+    content.innerHTML = `<p><strong>Atenção:</strong><br>
+    A combinação selecionada ultrapassou <strong>130%</strong> da capacidade recomendada.<br>
+    Embora ainda seja funcional, este é um ponto de atenção — valores muito acima dessa margem podem causar <strong>problemas de performance</strong> ou <strong>desgaste precoce</strong> do equipamento no futuro.<br><br>
+    Recomendamos avaliar alternativas dentro da faixa ideal para maior segurança e eficiência.</p>`;
+  }
+  
+  modal.classList.remove('hidden');
+}
+
 
     function fecharPopup() {
       document.getElementById('popupModal').classList.add('hidden');
