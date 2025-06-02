@@ -72,24 +72,26 @@
       const fornecedor = "{{ fornecedor }}";
 
       try {
-        if (fornecedor === "Daikin") {
-          dadosR410A = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
-          gramaturas410 = await fetch("/static/data/Daikin/daikin_gramaturas.json").then(r => r.json());
-        } else if (fornecedor === "Gree") {
-          dadosR410A = await fetch(caminho_json + "compatibilidade_gree.json").then(r => r.json());
-          gramaturas410 = await fetch(caminho_json + "gramatura_gree.json").then(r => r.json());
-        } else if (fornecedor === "TCL") {
-          dadosR410A = await fetch(caminho_json + "compatibilidade.json").then(r => r.json());
-          gramaturas410 = await fetch(caminho_json + "gramaturas.json").then(r => r.json());
-        } else {
-          dadosR410A = await fetch(caminho_json + "compatibilidade_r410a.json").then(r => r.json());
-          gramaturas410 = await fetch(caminho_json + "gramaturas_r410a.json").then(r => r.json());
-          if (fornecedor === "LG") {
-            dadosR32 = await fetch(caminho_json + "compatibilidade_r32.json").then(r => r.json());
-            gramaturas32 = await fetch(caminho_json + "gramaturas_r32.json").then(r => r.json());
-          }
-        }
-
+  if (fornecedor === "Daikin") {
+    dadosR410A = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
+    gramaturas410 = await fetch("/static/data/Daikin/daikin_gramaturas.json").then(r => r.json());
+  } else if (fornecedor === "Gree") {
+    dadosR410A = await fetch(caminho_json + "compatibilidade_gree.json").then(r => r.json());
+    gramaturas410 = await fetch(caminho_json + "gramatura_gree.json").then(r => r.json());
+  } else if (fornecedor === "Midea") {
+    dadosR410A = await fetch(caminho_json + "compatibilidade_midea.json").then(r => r.json());
+    gramaturas410 = await fetch(caminho_json + "gramatura_midea.json").then(r => r.json());
+  } else if (fornecedor === "TCL") {
+    dadosR410A = await fetch(caminho_json + "compatibilidade.json").then(r => r.json());
+    gramaturas410 = await fetch(caminho_json + "gramaturas.json").then(r => r.json());
+  } else {
+    dadosR410A = await fetch(caminho_json + "compatibilidade_r410a.json").then(r => r.json());
+    gramaturas410 = await fetch(caminho_json + "gramaturas_r410a.json").then(r => r.json());
+    if (fornecedor === "LG") {
+      dadosR32 = await fetch(caminho_json + "compatibilidade_r32.json").then(r => r.json());
+      gramaturas32 = await fetch(caminho_json + "gramaturas_r32.json").then(r => r.json());
+    }
+  }
         criarInterfaceEvaps();
         atualizarTotal();
       } catch (error) {
