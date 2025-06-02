@@ -210,7 +210,9 @@
       } else if (tipo === 'atencao') {
         title.innerText = 'Atenção!';
         if (fornecedor === "Midea") {
-          content.innerHTML = `<p><strong>Atenção:</strong><br>Essa combinação é funcional, mas está destacada no catálogo com ressalvas para uso específico e demanda análise técnica adicional. Consulte o catálogo Midea para detalhes.</p>`;
+          content.innerHTML = `<p><strong>Atenção:</strong><br>
+Combinações disponíveis apenas na utilização de Unidades Evaporadoras tipo <strong>High Wall Multisplit</strong>, modelos <strong>42AGMSB/42MGMSB</strong>.
+</p>`;
         } else {
           content.innerHTML = `<p><strong>Atenção:</strong><br>A combinação ultrapassou 130% da capacidade recomendada. Embora ainda funcional, essa configuração pode comprometer o desempenho ou a vida útil do sistema.</p>`;
         }
