@@ -69,7 +69,7 @@ def callback():
 @app.route("/selecionar", methods=["GET", "POST"])
 @login_required
 def selecionar_fornecedor():
-    fornecedores = ['LG', 'Fujitsu', 'Daikin', 'TCL', 'Gree']
+    fornecedores = ['LG', 'Fujitsu', 'Daikin', 'TCL', 'Gree', 'Midea']
     if request.method == 'POST':
         session['fornecedor'] = request.form.get('fornecedor', 'LG')
         return redirect(url_for('simulador'))
