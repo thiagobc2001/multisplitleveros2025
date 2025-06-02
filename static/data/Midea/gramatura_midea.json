@@ -1,22 +1,30 @@
 [
   {
-    "faixa":"18000",
-    "modelo":"38MBMB_18",
-    "marca":"Midea"
+    "faixa": "18000",
+    "modelo": "38MBMB_18",
+    "marca": "Midea",
+    "min": "Sem informações no catálogo",
+    "max": "Sem informações no catálogo"
   },
   {
-    "faixa":"27000",
-    "modelo":"38MBMT_27",
-    "marca":"Midea"
+    "faixa": "27000",
+    "modelo": "38MBMT_27",
+    "marca": "Midea",
+    "min": "Sem informações no catálogo",
+    "max": "Sem informações no catálogo"
   },
   {
-    "faixa":"36000",
-    "modelo":"38MBMM_36",
-    "marca":"Midea"
+    "faixa": "36000",
+    "modelo": "38MBMM_36",
+    "marca": "Midea",
+    "min": "Sem informações no catálogo",
+    "max": "Sem informações no catálogo"
   },
   {
-    "faixa":"42000",
-    "modelo":"38MBMP_42",
-    "marca":"Midea"
+    "faixa": "42000",
+    "modelo": "38MBMP_42",
+    "marca": "Midea",
+    "min": "Sem informações no catálogo",
+    "max": "Sem informações no catálogo"
   }
 ]
