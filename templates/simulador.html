@@ -72,26 +72,26 @@
       const fornecedor = "{{ fornecedor }}";
 
       try {
-  if (fornecedor === "Daikin") {
-    dadosR410A = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
-    gramaturas410 = await fetch("/static/data/Daikin/daikin_gramaturas.json").then(r => r.json());
-  } else if (fornecedor === "Gree") {
-    dadosR410A = await fetch(caminho_json + "compatibilidade_gree.json").then(r => r.json());
-    gramaturas410 = await fetch(caminho_json + "gramatura_gree.json").then(r => r.json());
-  } else if (fornecedor === "Midea") {
-    dadosR410A = await fetch(caminho_json + "compatibilidade_midea.json").then(r => r.json());
-    gramaturas410 = await fetch(caminho_json + "gramatura_midea.json").then(r => r.json());
-  } else if (fornecedor === "TCL") {
-    dadosR410A = await fetch(caminho_json + "compatibilidade.json").then(r => r.json());
-    gramaturas410 = await fetch(caminho_json + "gramaturas.json").then(r => r.json());
-  } else {
-    dadosR410A = await fetch(caminho_json + "compatibilidade_r410a.json").then(r => r.json());
-    gramaturas410 = await fetch(caminho_json + "gramaturas_r410a.json").then(r => r.json());
-    if (fornecedor === "LG") {
-      dadosR32 = await fetch(caminho_json + "compatibilidade_r32.json").then(r => r.json());
-      gramaturas32 = await fetch(caminho_json + "gramaturas_r32.json").then(r => r.json());
-    }
-  }
+        if (fornecedor === "Daikin") {
+          dadosR410A = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
+          gramaturas410 = await fetch("/static/data/Daikin/daikin_gramaturas.json").then(r => r.json());
+        } else if (fornecedor === "Gree") {
+          dadosR410A = await fetch(caminho_json + "compatibilidade_gree.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramatura_gree.json").then(r => r.json());
+        } else if (fornecedor === "Midea") {
+          dadosR410A = await fetch(caminho_json + "compatibilidade_midea.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramatura_midea.json").then(r => r.json());
+        } else if (fornecedor === "TCL") {
+          dadosR410A = await fetch(caminho_json + "compatibilidade.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramaturas.json").then(r => r.json());
+        } else {
+          dadosR410A = await fetch(caminho_json + "compatibilidade_r410a.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramaturas_r410a.json").then(r => r.json());
+          if (fornecedor === "LG") {
+            dadosR32 = await fetch(caminho_json + "compatibilidade_r32.json").then(r => r.json());
+            gramaturas32 = await fetch(caminho_json + "gramaturas_r32.json").then(r => r.json());
+          }
+        }
         criarInterfaceEvaps();
         atualizarTotal();
       } catch (error) {
@@ -144,7 +144,6 @@
       if (fornecedor === "Gree") faixasFixas = ["33000", "44000", "48000", "57000", "68000", "72000"];
       if (fornecedor === "Midea") faixasFixas = ["18000", "27000", "36000", "42000"];
 
-
       faixasFixas.forEach(faixa => {
         const modelos410 = gramaturas410.filter(g => g.faixa === faixa);
         const modelos32 = gramaturas32.filter(g => g.faixa === faixa);
@@ -171,7 +170,6 @@
     function gerarSubcard(gram, valor, tipo) {
       let cor = "bg-red-100 border-red-400 text-red-700";
       let status = "Incompatível";
-      let icone = "";
       if (valor && valor !== "X") {
         const perc = parseInt(valor.replace("%", ""));
         if (perc > 130) {
@@ -193,28 +191,27 @@
         </div>`;
     }
 
-  function abrirPopup(tipo) {
-  const modal = document.getElementById('popupModal');
-  const title = document.getElementById('popupTitle');
-  const content = document.getElementById('popupContent');
-  
-  if (tipo === 'duvidas') {
-    title.innerText = 'Dúvidas Frequentes';
-    content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>
-    Para utilizar, basta informar a quantidade de evaporadoras necessárias nos campos correspondentes.<br>
-    Logo abaixo, o sistema mostrará automaticamente as condensadoras compatíveis com a sua configuração.<br><br>
-    Em caso de dúvidas, dificuldades ou se encontrar algum bug, entre em contato com o <strong>time de Inteligência Comercial</strong>. Estamos prontos para ajudar!</p>`;
-  } else if (tipo === 'atencao') {
-    title.innerText = 'Atenção!';
-    content.innerHTML = `<p><strong>Atenção:</strong><br>
-    A combinação selecionada ultrapassou <strong>130%</strong> da capacidade recomendada.<br>
-    Embora ainda seja funcional, este é um ponto de atenção — valores muito acima dessa margem podem causar <strong>problemas de performance</strong> ou <strong>desgaste precoce</strong> do equipamento no futuro.<br><br>
-    Recomendamos avaliar alternativas dentro da faixa ideal para maior segurança e eficiência.</p>`;
-  }
-  
-  modal.classList.remove('hidden');
-}
+    function abrirPopup(tipo) {
+      const modal = document.getElementById('popupModal');
+      const title = document.getElementById('popupTitle');
+      const content = document.getElementById('popupContent');
 
+      if (tipo === 'duvidas') {
+        title.innerText = 'Dúvidas Frequentes';
+        content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>
+        Para utilizar, basta informar a quantidade de evaporadoras necessárias nos campos correspondentes.<br>
+        Logo abaixo, o sistema mostrará automaticamente as condensadoras compatíveis com a sua configuração.<br><br>
+        Em caso de dúvidas ou bugs, entre em contato com o <strong>time de Inteligência Comercial</strong>.</p>`;
+      } else if (tipo === 'atencao') {
+        title.innerText = 'Atenção!';
+        if (fornecedor === "Midea") {
+          content.innerHTML = `<p><strong>Atenção:</strong><br>Essa combinação é funcional, mas está destacada no catálogo com ressalvas para uso específico e demanda análise técnica adicional. Consulte o catálogo Midea para detalhes.</p>`;
+        } else {
+          content.innerHTML = `<p><strong>Atenção:</strong><br>A combinação ultrapassou 130% da capacidade recomendada. Embora ainda funcional, essa configuração pode comprometer o desempenho ou a vida útil do sistema.</p>`;
+        }
+      }
+      modal.classList.remove('hidden');
+    }
 
     function fecharPopup() {
       document.getElementById('popupModal').classList.add('hidden');

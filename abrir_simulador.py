@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from requests_oauthlib import OAuth2Session
 
 app = Flask(__name__, static_folder='static')
-app.secret_key = 'b3b0d4523a3fdc6a91ee0f795ad78d33f7c394e2b8328e9c4dd478f97c9f4e7d'  # Altere para algo seguro
+app.secret_key = 'b3b0d4523a3fdc6a91ee0f795ad78d33f7c394e2b8328e9c4dd478f97c9f4e7d'  # Alterar para um segredo seguro
 
 # ====== CONFIGURAÇÃO GOOGLE OAUTH ======
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -57,7 +57,7 @@ def callback():
     )
     session["oauth_token"] = token
     userinfo = google.get(USER_INFO_URL).json()
-    
+
     email = userinfo.get("email", "")
     if not email.endswith("@leveros.com.br"):
         return "Acesso restrito a usuários @leveros.com.br", 403
@@ -80,7 +80,22 @@ def selecionar_fornecedor():
 @login_required
 def simulador():
     fornecedor = session.get('fornecedor', 'LG')
-    caminho_json = f'/static/data/{fornecedor}/'
+
+    # Deixar o nome da pasta no padrão para Midea (primeira letra maiúscula)
+    if fornecedor.lower() == "midea":
+        fornecedor_path = "Midea"
+    elif fornecedor.lower() == "gree":
+        fornecedor_path = "Gree"
+    elif fornecedor.lower() == "tcl":
+        fornecedor_path = "TCL"
+    elif fornecedor.lower() == "daikin":
+        fornecedor_path = "Daikin"
+    elif fornecedor.lower() == "fujitsu":
+        fornecedor_path = "Fujitsu"
+    else:
+        fornecedor_path = "LG"
+
+    caminho_json = f'/static/data/{fornecedor_path}/'
     return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor)
 
 # ====== LOGOUT ======
