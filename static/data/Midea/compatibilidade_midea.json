@@ -1,46 +1,65 @@
 {
   "9 + 9": {
     "18000": "Compatível",
-    "27000": "Compatível"
+    "27000": "Compatível",
+    "36000": "Compatível"
   },
   "9 + 12": {
     "18000": "Compatível",
-    "27000": "Compatível"
+    "27000": "Compatível",
+    "36000": "Compatível",
+    "42000": "Compatível"
   },
   "9 + 18": {
     "18000": "Compatível",
-    "27000": "Compatível"
+    "27000": "Compatível",
+    "36000": "Compatível",
+    "42000": "Compatível"
+  },
+  "9 + 24": {
+    "36000": "Atenção",
+    "42000": "Atenção"
   },
   "12 + 12": {
     "18000": "Compatível",
-    "27000": "Compatível"
-  },
-  "9 + 24": {
-    "27000": "Compatível"
+    "27000": "Compatível",
+    "36000": "Compatível",
+    "42000": "Compatível"
   },
   "12 + 18": {
-    "27000": "Compatível"
+    "27000": "Compatível",
+    "36000": "Compatível",
+    "42000": "Compatível"
   },
   "12 + 24": {
-    "27000": "Atenção"
+    "36000": "Atenção",
+    "42000": "Atenção"
   },
   "18 + 18": {
-    "27000": "Compatível"
+    "27000": "Compatível",
+    "36000": "Compatível",
+    "42000": "Compatível"
   },
   "18 + 24": {
-    "27000": "Atenção"
+    "36000": "Atenção",
+    "42000": "Atenção"
   },
   "24 + 24": {
-    "27000": "Compatível"
+    "27000": "Compatível",
+    "36000": "Atenção",
+    "42000": "Atenção"
   },
   "9 + 9 + 9": {
+    "27000": "Compatível",
     "36000": "Compatível"
   },
   "9 + 9 + 12": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
   "9 + 9 + 18": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
@@ -49,10 +68,12 @@
     "42000": "Atenção"
   },
   "9 + 12 + 12": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
   "9 + 12 + 18": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
@@ -61,6 +82,7 @@
     "42000": "Atenção"
   },
   "9 + 18 + 18": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
@@ -73,10 +95,12 @@
     "42000": "Atenção"
   },
   "12 + 12 + 12": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
   "12 + 12 + 18": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
@@ -85,6 +109,7 @@
     "42000": "Atenção"
   },
   "12 + 18 + 18": {
+    "27000": "Compatível",
     "36000": "Compatível",
     "42000": "Compatível"
   },
@@ -113,8 +138,7 @@
     "42000": "Atenção"
   },
   "9 + 9 + 9 + 9": {
-    "36000": "Compatível",
-    "42000": "Compatível"
+    "36000": "Compatível"
   },
   "9 + 9 + 9 + 12": {
     "36000": "Compatível",
@@ -143,12 +167,6 @@
   "9 + 9 + 18 + 18": {
     "36000": "Compatível",
     "42000": "Compatível"
-  },
-  "9 + 9 + 18 + 24": {
-    "42000": "Atenção"
-  },
-  "9 + 9 + 24 + 24": {
-    "42000": "Atenção"
   },
   "9 + 12 + 12 + 12": {
     "42000": "Compatível"
