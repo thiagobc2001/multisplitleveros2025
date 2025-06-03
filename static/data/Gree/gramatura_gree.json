@@ -1,41 +1,41 @@
 [
   {
-    "faixa": "33000",
+    "faixa": "18000",
     "modelo": "2GWHD(18)ND6BO",
     "marca": "Gree",
     "min": 7000,
     "max": 22000
   },
   {
-    "faixa": "44000",
+    "faixa": "24000",
     "modelo": "3GWHD(24)ND6BO",
     "marca": "Gree",
     "min": 7500,
     "max": 30400
   },
   {
-    "faixa": "48000",
+    "faixa": "30000",
     "modelo": "3GWHD(30)ND6BO",
     "marca": "Gree",
     "min": 7850,
     "max": 33100
   },
   {
-    "faixa": "57000",
+    "faixa": "36000",
     "modelo": "4GWHD(36)ND6BO",
     "marca": "Gree",
     "min": 7800,
     "max": 40300
   },
   {
-    "faixa": "68000",
+    "faixa": "42000",
     "modelo": "5GWHD(42)ND6BO",
     "marca": "Gree",
     "min": 8900,
     "max": 51200
   },
   {
-    "faixa": "72000",
+    "faixa": "48000",
     "modelo": "5GWHD(48)ND6BO",
     "marca": "Gree",
     "min": 8900,
