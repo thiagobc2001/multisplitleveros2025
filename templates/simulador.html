@@ -102,7 +102,7 @@
 
     const fornecedor = "{{ fornecedor }}";
     const btusEvaps = (fornecedor === "Gree") ? [9000, 12000, 18000, 22000, 24000]
-                       : (fornecedor === "TCL" || fornecedor === "Daikin" || fornecedor === "Midea") ? [9000, 12000, 18000, 24000]
+                       : (fornecedor === "TCL" || fornecedor === "Daikin" || fornecedor === "Midea" || fornecedor === "Fujitsu") ? [9000, 12000, 18000, 24000]
                        : [7000, 9000, 12000, 18000, 24000];
     const nomesEvaps = {
       7000: "7.000 BTUs", 9000: "9.000 BTUs", 12000: "12.000 BTUs", 18000: "18.000 BTUs", 22000: "22.000 BTUs", 24000: "24.000 BTUs"
@@ -143,6 +143,7 @@
       if (fornecedor === "Daikin") faixasFixas = ["30000", "39000", "51000", "54000"];
       if (fornecedor === "Gree") faixasFixas = ["18000", "24000", "30000", "36000", "42000", "48000"];
       if (fornecedor === "Midea") faixasFixas = ["18000", "27000", "36000", "42000"];
+      if (fornecedor === "Fujitsu") faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
 
       faixasFixas.forEach(faixa => {
         const modelos410 = gramaturas410.filter(g => g.faixa === faixa);
@@ -170,21 +171,15 @@
     function gerarSubcard(gram, valor, tipo) {
       let cor = "bg-red-100 border-red-400 text-red-700";
       let status = "Incompatível";
-     if (valor && valor !== "X") {
-  if (valor.includes("Atenção")) {
-    cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
-    status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
-  } else {
-    const perc = parseInt(valor.replace("%", ""));
-    if (!isNaN(perc) && perc > 130) {
-      cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
-      status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
-    } else {
-      cor = "bg-green-100 border-green-400 text-green-700";
-      status = "Compatível";
-    }
-  }
-}
+      if (valor && valor !== "X") {
+        if (valor.includes("Atenção") || valor.includes("ATENÇÃO")) {
+          cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
+          status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
+        } else {
+          cor = "bg-green-100 border-green-400 text-green-700";
+          status = "Compatível";
+        }
+      }
       return `
         <div class="rounded-lg border-l-4 ${cor} p-3">
           <p class="text-sm"><strong>Tipo:</strong> ${tipo}</p>
@@ -203,18 +198,15 @@
 
       if (tipo === 'duvidas') {
         title.innerText = 'Dúvidas Frequentes';
-        content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>
-        Para utilizar, basta informar a quantidade de evaporadoras necessárias nos campos correspondentes.<br>
-        Logo abaixo, o sistema mostrará automaticamente as condensadoras compatíveis com a sua configuração.<br><br>
-        Em caso de dúvidas ou bugs, entre em contato com o <strong>time de Inteligência Comercial</strong>.</p>`;
+        content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>Para utilizar, informe a quantidade de evaporadoras.<br>O sistema mostrará automaticamente as condensadoras compatíveis.<br><br>Em caso de dúvidas ou bugs, entre em contato com o <strong>time de Inteligência Comercial</strong>.</p>`;
       } else if (tipo === 'atencao') {
         title.innerText = 'Atenção!';
         if (fornecedor === "Midea") {
-          content.innerHTML = `<p><strong>Atenção:</strong><br>
-Combinações disponíveis apenas na utilização de Unidades Evaporadoras tipo <strong>High Wall Multisplit</strong>, modelos <strong>42AGMSB/42MGMSB</strong>.
-</p>`;
+          content.innerHTML = `<p><strong>Atenção:</strong><br>Combinações disponíveis apenas na utilização de Unidades Evaporadoras tipo <strong>High Wall Multisplit</strong>, modelos <strong>42AGMSB/42MGMSB</strong>.</p>`;
+        } else if (fornecedor === "Fujitsu") {
+          content.innerHTML = `<p><strong>Atenção:</strong><br>Quando <strong>ASBG18LFCA</strong> (High Wall 18.000 BTU) está conectada, conectar no mínimo 1 evaporadora do tipo High Wall de 9.000 BTU.</p>`;
         } else {
-          content.innerHTML = `<p><strong>Atenção:</strong><br>A combinação ultrapassou 130% da capacidade recomendada. Embora ainda funcional, essa configuração pode comprometer o desempenho ou a vida útil do sistema.</p>`;
+          content.innerHTML = `<p><strong>Atenção:</strong><br>A combinação ultrapassou 130% da capacidade recomendada. Essa configuração pode comprometer o desempenho ou a vida útil do sistema.</p>`;
         }
       }
       modal.classList.remove('hidden');
