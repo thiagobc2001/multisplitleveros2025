@@ -1,10 +1,15 @@
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file
 from requests_oauthlib import OAuth2Session
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.orm import declarative_base, sessionmaker
+from datetime import datetime
+import pandas as pd
 
+# ====== FLASK CONFIGURAÇÃO ======
 app = Flask(__name__, static_folder='static')
-app.secret_key = 'b3b0d4523a3fdc6a91ee0f795ad78d33f7c394e2b8328e9c4dd478f97c9f4e7d'  # Alterar para um segredo seguro
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 # ====== CONFIGURAÇÃO GOOGLE OAUTH ======
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -18,7 +23,23 @@ SCOPE = [
     "https://www.googleapis.com/auth/userinfo.profile"
 ]
 
-# ====== FUNÇÃO PARA PROTEGER ROTAS ======
+# ====== BANCO DE DADOS ======
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
+
+class Feedback(Base):
+    __tablename__ = 'feedback'
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True)
+    rating = Column(Integer)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+Base.metadata.create_all(bind=engine)
+
+# ====== MIDDLEWARE LOGIN ======
 def login_required(view_func):
     def wrapped_view(*args, **kwargs):
         if "email" not in session or not session["email"].endswith("@leveros.com.br"):
@@ -27,14 +48,13 @@ def login_required(view_func):
     wrapped_view.__name__ = view_func.__name__
     return wrapped_view
 
-# ====== ROTA INICIAL ======
+# ====== ROTAS PRINCIPAIS ======
 @app.route("/")
 def index():
     if "email" in session and session["email"].endswith("@leveros.com.br"):
         return redirect(url_for("selecionar_fornecedor"))
     return redirect(url_for("login"))
 
-# ====== LOGIN COM GOOGLE ======
 @app.route("/login")
 def login():
     google = OAuth2Session(CLIENT_ID, redirect_uri=REDIRECT_URI, scope=SCOPE)
@@ -46,7 +66,6 @@ def login():
     session["oauth_state"] = state
     return redirect(authorization_url)
 
-# ====== CALLBACK DO GOOGLE ======
 @app.route("/callback")
 def callback():
     google = OAuth2Session(CLIENT_ID, redirect_uri=REDIRECT_URI, state=session.get("oauth_state"))
@@ -65,7 +84,6 @@ def callback():
     session["email"] = email
     return redirect(url_for("selecionar_fornecedor"))
 
-# ====== SELECIONAR FORNECEDOR ======
 @app.route("/selecionar", methods=["GET", "POST"])
 @login_required
 def selecionar_fornecedor():
@@ -75,13 +93,11 @@ def selecionar_fornecedor():
         return redirect(url_for('simulador'))
     return render_template('login.html', fornecedores=fornecedores)
 
-# ====== SIMULADOR PROTEGIDO ======
 @app.route("/simulador")
 @login_required
 def simulador():
     fornecedor = session.get('fornecedor', 'LG')
 
-    # Deixar o nome da pasta no padrão para Midea (primeira letra maiúscula)
     if fornecedor.lower() == "midea":
         fornecedor_path = "Midea"
     elif fornecedor.lower() == "gree":
@@ -96,9 +112,58 @@ def simulador():
         fornecedor_path = "LG"
 
     caminho_json = f'/static/data/{fornecedor_path}/'
-    return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor)
+    return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor, email=session["email"])
 
-# ====== LOGOUT ======
+@app.route("/submit_feedback", methods=["POST"])
+@login_required
+def submit_feedback():
+    email = session["email"]
+    rating = request.json.get("rating")
+
+    db = SessionLocal()
+    feedback = db.query(Feedback).filter(Feedback.email == email).first()
+    if not feedback:
+        novo_feedback = Feedback(email=email, rating=rating)
+        db.add(novo_feedback)
+        db.commit()
+    db.close()
+    return jsonify({"message": "Feedback registrado!"})
+
+@app.route("/feedback_status")
+@login_required
+def feedback_status():
+    email = session["email"]
+    db = SessionLocal()
+    feedback = db.query(Feedback).filter(Feedback.email == email).first()
+    db.close()
+    if feedback:
+        return jsonify({"has_feedback": True})
+    else:
+        return jsonify({"has_feedback": False})
+
+# ====== EXPORTAR FEEDBACKS EM XLSX (Somente para usuários autorizados) ======
+@app.route("/ver_feedbacks")
+@login_required
+def ver_feedbacks():
+    if session["email"] not in ["thiago.camargo@leveros.com.br", "allan.costa@leveros.com.br"]:
+        return "Acesso não autorizado", 403
+
+    db = SessionLocal()
+    feedbacks = db.query(Feedback).all()
+    db.close()
+
+    data = [{
+        "Email": fb.email,
+        "Nota": fb.rating,
+        "Data": fb.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    } for fb in feedbacks]
+
+    df = pd.DataFrame(data)
+    file_path = "/tmp/feedbacks.xlsx"
+    df.to_excel(file_path, index=False)
+
+    return send_file(file_path, as_attachment=True)
+
 @app.route("/logout")
 def logout():
     session.clear()
