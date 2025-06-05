@@ -44,16 +44,13 @@
           Salvar Excel
         </button>
         <button onclick="abrirPopup('duvidas')" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition">
-    Dúvidas
-  </button>
-
-  {% if email in ['thiago.camargo@leveros.com.br', 'allan.costa@leveros.com.br'] %}
-    <!-- Botão Baixar Avaliações SÓ pra Thiago e Allan -->
-    <a href="/ver_feedbacks" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition text-center">
-      Baixar Avaliações
-    </a>
-  {% endif %}
-</div>
+          Dúvidas
+        </button>
+        <a href="/ver_feedbacks" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition text-center">
+          Baixar Avaliações
+        </a>
+      </div>
+    </div>
 
     <h2 class="text-xl font-semibold text-[#005A64] mb-1 mt--16">Condensadoras</h2>
     <div id="cardsFaixaBTU" class="grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>

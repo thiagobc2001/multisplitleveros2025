@@ -97,7 +97,6 @@ def selecionar_fornecedor():
 @login_required
 def simulador():
     fornecedor = session.get('fornecedor', 'LG')
-    email = session.get('email')  # ⬅️ Pega o email do usuário logado
 
     if fornecedor.lower() == "midea":
         fornecedor_path = "Midea"
@@ -113,8 +112,7 @@ def simulador():
         fornecedor_path = "LG"
 
     caminho_json = f'/static/data/{fornecedor_path}/'
-    return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor, email=email)
-
+    return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor)
 
 @app.route("/submit_feedback", methods=["POST"])
 @login_required
