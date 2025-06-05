@@ -7,7 +7,8 @@ from datetime import datetime
 
 # ====== FLASK CONFIGURAÇÃO ======
 app = Flask(__name__, static_folder='static')
-app.secret_key = 'seu-segredo-aqui'
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
+
 
 # ====== OAUTH CONFIG ======
 CLIENT_ID = os.getenv("CLIENT_ID")
