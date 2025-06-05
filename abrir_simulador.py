@@ -1,16 +1,17 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file
 from requests_oauthlib import OAuth2Session
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
+import pandas as pd
 
 # ====== FLASK CONFIGURAÇÃO ======
 app = Flask(__name__, static_folder='static')
-app.secret_key = os.getenv('FLASK_SECRET_KEY')
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
-
-# ====== OAUTH CONFIG ======
+# ====== CONFIGURAÇÃO GOOGLE OAUTH ======
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 AUTHORIZATION_BASE_URL = "https://accounts.google.com/o/oauth2/auth"
@@ -23,7 +24,7 @@ SCOPE = [
 ]
 
 # ====== BANCO DE DADOS ======
-DATABASE_URL = os.getenv("DATABASE_URL")  # <-- A URL que você copiou no Render
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
@@ -47,6 +48,7 @@ def login_required(view_func):
     wrapped_view.__name__ = view_func.__name__
     return wrapped_view
 
+# ====== ROTAS PRINCIPAIS ======
 @app.route("/")
 def index():
     if "email" in session and session["email"].endswith("@leveros.com.br"):
@@ -74,7 +76,7 @@ def callback():
     )
     session["oauth_token"] = token
     userinfo = google.get(USER_INFO_URL).json()
-    
+
     email = userinfo.get("email", "")
     if not email.endswith("@leveros.com.br"):
         return "Acesso restrito a usuários @leveros.com.br", 403
@@ -95,7 +97,21 @@ def selecionar_fornecedor():
 @login_required
 def simulador():
     fornecedor = session.get('fornecedor', 'LG')
-    caminho_json = f'/static/data/{fornecedor}/'
+
+    if fornecedor.lower() == "midea":
+        fornecedor_path = "Midea"
+    elif fornecedor.lower() == "gree":
+        fornecedor_path = "Gree"
+    elif fornecedor.lower() == "tcl":
+        fornecedor_path = "TCL"
+    elif fornecedor.lower() == "daikin":
+        fornecedor_path = "Daikin"
+    elif fornecedor.lower() == "fujitsu":
+        fornecedor_path = "Fujitsu"
+    else:
+        fornecedor_path = "LG"
+
+    caminho_json = f'/static/data/{fornecedor_path}/'
     return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor)
 
 @app.route("/submit_feedback", methods=["POST"])
@@ -124,6 +140,26 @@ def feedback_status():
         return jsonify({"has_feedback": True})
     else:
         return jsonify({"has_feedback": False})
+
+# ====== EXPORTAR FEEDBACKS EM XLSX ======
+@app.route("/ver_feedbacks")
+@login_required
+def ver_feedbacks():
+    db = SessionLocal()
+    feedbacks = db.query(Feedback).all()
+    db.close()
+
+    data = [{
+        "Email": fb.email,
+        "Nota": fb.rating,
+        "Data": fb.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    } for fb in feedbacks]
+
+    df = pd.DataFrame(data)
+    file_path = "/tmp/feedbacks.xlsx"
+    df.to_excel(file_path, index=False)
+
+    return send_file(file_path, as_attachment=True)
 
 @app.route("/logout")
 def logout():

@@ -46,6 +46,10 @@
         <button onclick="abrirPopup('duvidas')" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition">
           Dúvidas
         </button>
+        <!-- Botão Novo -->
+        <a href="/ver_feedbacks" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition text-center">
+          Baixar Avaliações
+        </a>
       </div>
     </div>
 
@@ -53,7 +57,7 @@
     <div id="cardsFaixaBTU" class="grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
   </div>
 
-  <!-- Popup Modal Dúvidas -->
+  <!-- Popup Modal -->
   <div id="popupModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
     <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md text-center">
       <h2 id="popupTitle" class="text-2xl font-bold mb-4 text-[#005A64]"></h2>
@@ -64,69 +68,177 @@
     </div>
   </div>
 
-  <!-- Popup Feedback -->
-  <div id="popupFeedback" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md text-center">
-      <h2 class="text-2xl font-bold mb-4 text-[#005A64]">Como foi sua experiência?</h2>
-      <div id="stars" class="flex justify-center gap-2 mb-4"></div>
-      <button id="sendFeedback" class="mt-4 px-4 py-2 bg-[#025243] text-white rounded hover:bg-[#4CDDDD] disabled:bg-gray-400" disabled>Enviar Avaliação</button>
-    </div>
-  </div>
-
   <script>
-    // Feedback.js
-    const popupFeedback = document.getElementById('popupFeedback');
-    const starsContainer = document.getElementById('stars');
-    const sendFeedbackButton = document.getElementById('sendFeedback');
-    let selectedRating = 0;
+    let dadosR410A = {}, dadosR32 = {}, gramaturas410 = [], gramaturas32 = [];
 
-    function createStars() {
-      starsContainer.innerHTML = '';
-      for (let i = 1; i <= 5; i++) {
-        const star = document.createElement('span');
-        star.innerHTML = '⭐';
-        star.classList.add('text-3xl', 'cursor-pointer');
-        star.dataset.value = i;
-        star.addEventListener('click', () => selectStar(i));
-        starsContainer.appendChild(star);
+    async function carregarDados() {
+      const caminho_json = "{{ caminho_json }}";
+      const fornecedor = "{{ fornecedor }}";
+
+      try {
+        if (fornecedor === "Daikin") {
+          dadosR410A = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
+          gramaturas410 = await fetch("/static/data/Daikin/daikin_gramaturas.json").then(r => r.json());
+        } else if (fornecedor === "Gree") {
+          dadosR410A = await fetch(caminho_json + "compatibilidade_gree.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramatura_gree.json").then(r => r.json());
+        } else if (fornecedor === "Midea") {
+          dadosR410A = await fetch(caminho_json + "compatibilidade_midea.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramatura_midea.json").then(r => r.json());
+        } else if (fornecedor === "TCL") {
+          dadosR410A = await fetch(caminho_json + "compatibilidade.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramaturas.json").then(r => r.json());
+        } else {
+          dadosR410A = await fetch(caminho_json + "compatibilidade_r410a.json").then(r => r.json());
+          gramaturas410 = await fetch(caminho_json + "gramaturas_r410a.json").then(r => r.json());
+          if (fornecedor === "LG") {
+            dadosR32 = await fetch(caminho_json + "compatibilidade_r32.json").then(r => r.json());
+            gramaturas32 = await fetch(caminho_json + "gramaturas_r32.json").then(r => r.json());
+          }
+        }
+        criarInterfaceEvaps();
+        atualizarTotal();
+      } catch (error) {
+        alert("Erro no carregamento dos dados: " + error.message);
+        console.error(error);
       }
     }
 
-    function selectStar(rating) {
-      selectedRating = rating;
-      document.querySelectorAll('#stars span').forEach(star => {
-        star.style.color = (star.dataset.value <= rating) ? '#FFD700' : '#ccc';
+    const fornecedor = "{{ fornecedor }}";
+    const btusEvaps = (fornecedor === "Gree") ? [9000, 12000, 18000, 22000, 24000]
+                       : (fornecedor === "TCL" || fornecedor === "Daikin" || fornecedor === "Midea") ? [9000, 12000, 18000, 24000]
+                       : [7000, 9000, 12000, 18000, 24000];
+    const nomesEvaps = {
+      7000: "7.000 BTUs", 9000: "9.000 BTUs", 12000: "12.000 BTUs", 18000: "18.000 BTUs", 22000: "22.000 BTUs", 24000: "24.000 BTUs"
+    };
+
+    function criarInterfaceEvaps() {
+      const div = document.getElementById("evaporadoras");
+      div.innerHTML = "";
+      btusEvaps.forEach(btus => {
+        div.innerHTML += `
+          <div class="bg-[#F0F0F0] p-4 rounded-xl shadow">
+            <label class="block text-sm font-semibold text-[#005A64] mb-1">${nomesEvaps[btus]}</label>
+            <input type="number" min="0" value="0" data-btus="${btus}" class="w-full text-center border border-gray-300 rounded p-2 font-semibold text-[#005A64]" onchange="atualizarTotal()">
+          </div>`;
       });
-      sendFeedbackButton.disabled = false;
     }
 
-    function showFeedbackPopup() {
-      const lastFeedbackTime = localStorage.getItem('lastFeedbackTime');
-      const now = new Date().getTime();
-      if (!lastFeedbackTime || (now - lastFeedbackTime) > (4 * 60 * 60 * 1000)) {
-        popupFeedback.classList.remove('hidden');
-      }
+    function atualizarTotal() {
+      const inputs = document.querySelectorAll('input[data-btus]');
+      let total = 0, evaps = [];
+      inputs.forEach(inp => {
+        const qtd = parseInt(inp.value || 0), btu = parseInt(inp.dataset.btus);
+        total += qtd * btu;
+        for (let i = 0; i < qtd; i++) evaps.push(btu);
+      });
+      const combinacao = evaps.length ? evaps.sort((a,b)=>a-b).map(e => e/1000).join(" + ") : "-";
+      document.getElementById("totalBtus").innerText = total;
+      document.getElementById("combinacaoEvaps").innerText = combinacao;
+      renderizarCards(combinacao);
     }
 
-    sendFeedbackButton.addEventListener('click', async () => {
-      if (selectedRating > 0) {
-        try {
-          await fetch('/feedback', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ rating: selectedRating })
-          });
-          localStorage.setItem('lastFeedbackTime', new Date().getTime());
-          popupFeedback.classList.add('hidden');
-        } catch (error) {
-          console.error('Erro ao enviar feedback:', error);
+    function renderizarCards(comb) {
+      const container = document.getElementById("cardsFaixaBTU");
+      container.innerHTML = "";
+      const combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join(" + ");
+      let faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
+      if (fornecedor === "TCL") faixasFixas = ["18000", "27000", "36000"];
+      if (fornecedor === "Daikin") faixasFixas = ["30000", "39000", "51000", "54000"];
+      if (fornecedor === "Gree") faixasFixas = ["18000", "24000", "30000", "36000", "42000", "48000"];
+      if (fornecedor === "Midea") faixasFixas = ["18000", "27000", "36000", "42000"];
+      if (fornecedor === "Fujitsu") faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
+
+      faixasFixas.forEach(faixa => {
+        const modelos410 = gramaturas410.filter(g => g.faixa === faixa);
+        const modelos32 = gramaturas32.filter(g => g.faixa === faixa);
+        let cards = "";
+
+        modelos410.forEach(gram => {
+          const uso = dadosR410A?.[combOrdenada]?.[faixa] || "X";
+          cards += gerarSubcard(gram, uso, "R410A");
+        });
+
+        modelos32.forEach(gram => {
+          const uso = dadosR32?.[combOrdenada]?.[faixa] || "X";
+          cards += gerarSubcard(gram, uso, "R32");
+        });
+
+        container.innerHTML += `
+          <div class="card-transition border p-4 rounded-xl bg-white">
+            <h3 class="text-lg font-bold text-[#005A64] mb-3">${faixa} BTUs</h3>
+            <div class="space-y-3">${cards || `<p class='text-sm text-gray-500'>Sem modelos nesta faixa.</p>`}</div>
+          </div>`;
+      });
+    }
+
+    function gerarSubcard(gram, valor, tipo) {
+      let cor = "bg-red-100 border-red-400 text-red-700";
+      let status = "Incompatível";
+      if (valor && valor !== "X") {
+        if (valor.includes("Atenção") || valor.includes("ATENÇÃO")) {
+          cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
+          status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
+        } else {
+          cor = "bg-green-100 border-green-400 text-green-700";
+          status = "Compatível";
         }
       }
-    });
+      return `
+        <div class="rounded-lg border-l-4 ${cor} p-3">
+          <p class="text-sm"><strong>Tipo:</strong> ${tipo}</p>
+          <p class="text-sm"><strong>Modelo:</strong> ${gram.modelo}</p>
+          <p class="text-sm"><strong>Marca:</strong> ${gram.marca}</p>
+          <p class="text-sm"><strong>Capacidade:</strong> ${gram.min || "-"} - ${gram.max || "-"} BTUs</p>
+          <p class="text-sm"><strong>Uso:</strong> ${valor || "X"}</p>
+          <p class="font-semibold">${status}</p>
+        </div>`;
+    }
 
-    createStars();
-    showFeedbackPopup();
+    function abrirPopup(tipo) {
+      const modal = document.getElementById('popupModal');
+      const title = document.getElementById('popupTitle');
+      const content = document.getElementById('popupContent');
+
+      if (tipo === 'duvidas') {
+        title.innerText = 'Dúvidas Frequentes';
+        content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>Para utilizar, informe a quantidade de evaporadoras.<br>O sistema mostrará automaticamente as condensadoras compatíveis.<br><br>Em caso de dúvidas ou bugs, entre em contato com o <strong>time de Inteligência Comercial</strong>.</p>`;
+      } else if (tipo === 'atencao') {
+        title.innerText = 'Atenção!';
+        if (fornecedor === "Midea") {
+          content.innerHTML = `<p><strong>Atenção:</strong><br>Combinações disponíveis apenas na utilização de Unidades Evaporadoras tipo <strong>High Wall Multisplit</strong>, modelos <strong>42AGMSB/42MGMSB</strong>.</p>`;
+        } else if (fornecedor === "Fujitsu") {
+          content.innerHTML = `<p><strong>Atenção:</strong><br>Quando <strong>ASBG18LFCA</strong> (High Wall 18.000 BTU) está conectada, conectar no mínimo 1 evaporadora do tipo High Wall de 9.000 BTU.</p>`;
+        } else {
+          content.innerHTML = `<p><strong>Atenção:</strong><br>A combinação ultrapassou 130% da capacidade recomendada. Essa configuração pode comprometer o desempenho ou a vida útil do sistema.</p>`;
+        }
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function fecharPopup() {
+      document.getElementById('popupModal').classList.add('hidden');
+    }
+
+    function exportarXLSX() {
+      const totalBtus = document.getElementById("totalBtus").innerText;
+      const combinacao = document.getElementById("combinacaoEvaps").innerText;
+      const linhas = [["Total BTUs", "Combinação"], [totalBtus, combinacao], [], ["Faixa", "Tipo", "Modelo", "Marca", "Capacidade", "Uso", "Status"]];
+      document.querySelectorAll("#cardsFaixaBTU > div").forEach(card => {
+        const faixa = card.querySelector("h3").innerText;
+        const subcards = card.querySelectorAll(".rounded-lg");
+        subcards.forEach(sub => {
+          const dados = [...sub.querySelectorAll("p")].map(p => p.innerText.split(": ")[1] || "");
+          linhas.push([faixa, ...dados]);
+        });
+      });
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(linhas);
+      XLSX.utils.book_append_sheet(wb, ws, "Simulação");
+      XLSX.writeFile(wb, "simulador_multisplit_resultado.xlsx");
+    }
+
+    carregarDados();
   </script>
-
 </body>
 </html>
