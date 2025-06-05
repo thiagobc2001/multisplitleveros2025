@@ -74,43 +74,6 @@
   </div>
 
   <script>
-    // Simulador.js
-    let dadosR410A = {}, dadosR32 = {}, gramaturas410 = [], gramaturas32 = [];
-
-    async function carregarDados() {
-      const caminho_json = "{{ caminho_json }}";
-      const fornecedor = "{{ fornecedor }}";
-
-      try {
-        // seu código para carregar os dados...
-        criarInterfaceEvaps();
-        atualizarTotal();
-      } catch (error) {
-        alert("Erro no carregamento dos dados: " + error.message);
-        console.error(error);
-      }
-    }
-
-    // seu código para evaporadoras, cards, popup dúvidas...
-
-    function abrirPopup(tipo) {
-      const modal = document.getElementById('popupModal');
-      const title = document.getElementById('popupTitle');
-      const content = document.getElementById('popupContent');
-
-      if (tipo === 'duvidas') {
-        title.innerText = 'Dúvidas Frequentes';
-        content.innerHTML = `<p>Preencha os campos e veja as combinações!</p>`;
-      }
-      modal.classList.remove('hidden');
-    }
-
-    function fecharPopup() {
-      document.getElementById('popupModal').classList.add('hidden');
-    }
-
-    carregarDados();
-
     // Feedback.js
     const popupFeedback = document.getElementById('popupFeedback');
     const starsContainer = document.getElementById('stars');
@@ -164,5 +127,6 @@
     createStars();
     showFeedbackPopup();
   </script>
+
 </body>
 </html>
