@@ -20,8 +20,9 @@
     }
   </style>
 </head>
-<body class="min-h-screen p-6 text-gray-900">
-  <div class="max-w-screen-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl" id="area-captura">
+<body class="min-h-screen bg-gradient-to-r from-[#002D32] to-[#025243] flex justify-center items-start p-6 text-gray-900">
+  <div id="area-captura" class="w-full max-w-screen-2xl bg-white p-8 rounded-2xl shadow-xl">
+  
     <div class="text-center">
       <h1 class="text-3xl md:text-4xl font-bold text-[#005A64]">Simulador MultiSplit - {{ fornecedor }}</h1>
     </div>
@@ -39,7 +40,7 @@
         <p>Total de BTUs: <span id="totalBtus">0</span></p>
         <p>Combinação: <span id="combinacaoEvaps">-</span></p>
       </div>
-     <!-- Botões -->
+    <!-- Botões -->
 <div class="mt-8 md:mt-0 flex flex-wrap gap-4 justify-center md:justify-end">
   <button onclick="exportarXLSX()" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition">
     Salvar Excel
@@ -48,17 +49,13 @@
     Dúvidas
   </button>
 
+  <!-- Só aparece para Thiago e Allan -->
   {% if email in ['thiago.camargo@leveros.com.br', 'allan.costa@leveros.com.br'] %}
   <a href="/ver_feedbacks" class="inline-block bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition text-center">
     Baixar Avaliações
   </a>
   {% endif %}
 </div>
-
-
-        <a href="/ver_feedbacks" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition text-center">
-          Baixar Avaliações
-        </a>
       </div>
     </div>
 
