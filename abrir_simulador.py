@@ -112,7 +112,7 @@ def simulador():
         fornecedor_path = "LG"
 
     caminho_json = f'/static/data/{fornecedor_path}/'
-    return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor)
+    return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor, email=session["email"])
 
 @app.route("/submit_feedback", methods=["POST"])
 @login_required
@@ -141,10 +141,13 @@ def feedback_status():
     else:
         return jsonify({"has_feedback": False})
 
-# ====== EXPORTAR FEEDBACKS EM XLSX ======
+# ====== EXPORTAR FEEDBACKS EM XLSX (Somente para usuários autorizados) ======
 @app.route("/ver_feedbacks")
 @login_required
 def ver_feedbacks():
+    if session["email"] not in ["thiago.camargo@leveros.com.br", "allan.costa@leveros.com.br"]:
+        return "Acesso não autorizado", 403
+
     db = SessionLocal()
     feedbacks = db.query(Feedback).all()
     db.close()
