@@ -6,6 +6,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Soleto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       font-family: 'Soleto', sans-serif;
@@ -18,10 +19,32 @@
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
+    .star {
+      font-size: 2.5rem;
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .star.hovered, .star.selected {
+      color: #FFD700;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+      transition: color 0.3s;
+    }
+    .close-btn:hover {
+      color: #000;
+    }
   </style>
 </head>
 <body class="min-h-screen p-6 text-gray-900">
   <div class="max-w-screen-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl" id="area-captura">
+    <!-- Seu Simulador: INÍCIO -->
     <div class="text-center">
       <h1 class="text-3xl md:text-4xl font-bold text-[#005A64]">Simulador MultiSplit - {{ fornecedor }}</h1>
     </div>
@@ -39,7 +62,7 @@
         <p>Total de BTUs: <span id="totalBtus">0</span></p>
         <p>Combinação: <span id="combinacaoEvaps">-</span></p>
       </div>
-      <div class="mt-8 md:mt-0 flex gap-4 justify-center md:justify-end">
+      <div class="mt-8 md:mt-0 flex flex-wrap gap-4 justify-center md:justify-end">
         <button onclick="exportarXLSX()" class="bg-[#025243] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4CDDDD] transition">
           Salvar Excel
         </button>
@@ -52,15 +75,26 @@
     <h2 class="text-xl font-semibold text-[#005A64] mb-1 mt--16">Condensadoras</h2>
     <div id="cardsFaixaBTU" class="grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
   </div>
+  <!-- Seu Simulador: FIM -->
 
-  <!-- Popup Modal -->
+  <!-- Popup Modal Dúvidas -->
   <div id="popupModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md text-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md text-center relative">
       <h2 id="popupTitle" class="text-2xl font-bold mb-4 text-[#005A64]"></h2>
       <p id="popupContent" class="text-gray-700 mb-4"></p>
       <button onclick="fecharPopup()" class="mt-4 px-4 py-2 bg-[#025243] text-white rounded hover:bg-[#4CDDDD]">
         Fechar
       </button>
+    </div>
+  </div>
+
+  <!-- Popup Feedback Avaliação -->
+  <div id="popupFeedback" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md text-center relative">
+      <i class="fas fa-times close-btn" id="closeFeedbackPopup"></i>
+      <h2 class="text-2xl font-bold mb-4 text-[#005A64]">Como foi sua experiência?</h2>
+      <div id="stars" class="flex justify-center gap-3 mb-4"></div>
+      <button id="sendFeedback" class="mt-4 px-6 py-2 bg-[#025243] text-white rounded hover:bg-[#4CDDDD] disabled:bg-gray-400" disabled>Enviar Avaliação</button>
     </div>
   </div>
 
@@ -70,7 +104,6 @@
     async function carregarDados() {
       const caminho_json = "{{ caminho_json }}";
       const fornecedor = "{{ fornecedor }}";
-
       try {
         if (fornecedor === "Daikin") {
           dadosR410A = await fetch("/static/data/Daikin/daikin_combinacoes.json").then(r => r.json());
@@ -100,7 +133,6 @@
       }
     }
 
-    
     const fornecedor = "{{ fornecedor }}";
     const btusEvaps = (fornecedor === "Gree") ? [9000, 12000, 18000, 22000, 24000]
                        : (fornecedor === "TCL" || fornecedor === "Daikin" || fornecedor === "Midea") ? [9000, 12000, 18000, 24000]
@@ -200,15 +232,6 @@
       if (tipo === 'duvidas') {
         title.innerText = 'Dúvidas Frequentes';
         content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>Para utilizar, informe a quantidade de evaporadoras.<br>O sistema mostrará automaticamente as condensadoras compatíveis.<br><br>Em caso de dúvidas ou bugs, entre em contato com o <strong>time de Inteligência Comercial</strong>.</p>`;
-      } else if (tipo === 'atencao') {
-        title.innerText = 'Atenção!';
-        if (fornecedor === "Midea") {
-          content.innerHTML = `<p><strong>Atenção:</strong><br>Combinações disponíveis apenas na utilização de Unidades Evaporadoras tipo <strong>High Wall Multisplit</strong>, modelos <strong>42AGMSB/42MGMSB</strong>.</p>`;
-        } else if (fornecedor === "Fujitsu") {
-          content.innerHTML = `<p><strong>Atenção:</strong><br>Quando <strong>ASBG18LFCA</strong> (High Wall 18.000 BTU) está conectada, conectar no mínimo 1 evaporadora do tipo High Wall de 9.000 BTU.</p>`;
-        } else {
-          content.innerHTML = `<p><strong>Atenção:</strong><br>A combinação ultrapassou 130% da capacidade recomendada. Essa configuração pode comprometer o desempenho ou a vida útil do sistema.</p>`;
-        }
       }
       modal.classList.remove('hidden');
     }
@@ -216,26 +239,83 @@
     function fecharPopup() {
       document.getElementById('popupModal').classList.add('hidden');
     }
+  </script>
 
-    function exportarXLSX() {
-      const totalBtus = document.getElementById("totalBtus").innerText;
-      const combinacao = document.getElementById("combinacaoEvaps").innerText;
-      const linhas = [["Total BTUs", "Combinação"], [totalBtus, combinacao], [], ["Faixa", "Tipo", "Modelo", "Marca", "Capacidade", "Uso", "Status"]];
-      document.querySelectorAll("#cardsFaixaBTU > div").forEach(card => {
-        const faixa = card.querySelector("h3").innerText;
-        const subcards = card.querySelectorAll(".rounded-lg");
-        subcards.forEach(sub => {
-          const dados = [...sub.querySelectorAll("p")].map(p => p.innerText.split(": ")[1] || "");
-          linhas.push([faixa, ...dados]);
-        });
-      });
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(linhas);
-      XLSX.utils.book_append_sheet(wb, ws, "Simulação");
-      XLSX.writeFile(wb, "simulador_multisplit_resultado.xlsx");
+  <!-- Script Feedback - continuação -->
+  <script>
+    const popupFeedback = document.getElementById('popupFeedback');
+    const starsContainer = document.getElementById('stars');
+    const sendFeedbackButton = document.getElementById('sendFeedback');
+    const closeFeedbackPopup = document.getElementById('closeFeedbackPopup');
+    let selectedRating = 0;
+
+    function createStars() {
+      starsContainer.innerHTML = '';
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('i');
+        star.classList.add('fa-regular', 'fa-star', 'star');
+        star.dataset.value = i;
+
+        star.addEventListener('mouseover', () => highlightStars(i));
+        star.addEventListener('mouseout', () => highlightStars(selectedRating));
+        star.addEventListener('click', () => selectStar(i));
+        starsContainer.appendChild(star);
+      }
     }
 
-    carregarDados();
+    function highlightStars(rating) {
+      document.querySelectorAll('.star').forEach(star => {
+        const value = parseInt(star.dataset.value);
+        if (value <= rating) {
+          star.classList.add('hovered');
+        } else {
+          star.classList.remove('hovered');
+        }
+      });
+    }
+
+    function selectStar(rating) {
+      selectedRating = rating;
+      highlightStars(rating);
+      sendFeedbackButton.disabled = false;
+    }
+
+    function showFeedbackPopup() {
+      const neverShow = localStorage.getItem('feedbackNeverShow');
+      if (neverShow) return;
+      
+      const lastFeedbackTime = localStorage.getItem('lastFeedbackTime');
+      const now = new Date().getTime();
+      if (!lastFeedbackTime || (now - lastFeedbackTime) > (24 * 60 * 60 * 1000)) {
+        popupFeedback.classList.remove('hidden');
+      }
+    }
+
+    sendFeedbackButton.addEventListener('click', async () => {
+      if (selectedRating > 0) {
+        try {
+          await fetch('/submit_feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: selectedRating })
+          });
+          localStorage.setItem('feedbackNeverShow', true);
+          popupFeedback.classList.add('hidden');
+          alert('Obrigado pelo feedback!');
+        } catch (error) {
+          console.error('Erro ao enviar feedback:', error);
+        }
+      }
+    });
+
+    closeFeedbackPopup.addEventListener('click', () => {
+      const now = new Date().getTime();
+      localStorage.setItem('lastFeedbackTime', now);
+      popupFeedback.classList.add('hidden');
+    });
+
+    createStars();
+    setTimeout(showFeedbackPopup, 3000);
   </script>
 </body>
 </html>
