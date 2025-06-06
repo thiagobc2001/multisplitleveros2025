@@ -44,7 +44,7 @@
 </head>
 <body class="min-h-screen p-6 text-gray-900">
   <div class="max-w-screen-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl" id="area-captura">
-    <!-- Seu Simulador: INÍCIO -->
+    <!-- Simulador -->
     <div class="text-center">
       <h1 class="text-3xl md:text-4xl font-bold text-[#005A64]">Simulador MultiSplit - {{ fornecedor }}</h1>
     </div>
@@ -75,7 +75,6 @@
     <h2 class="text-xl font-semibold text-[#005A64] mb-1 mt--16">Condensadoras</h2>
     <div id="cardsFaixaBTU" class="grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
   </div>
-  <!-- Seu Simulador: FIM -->
 
   <!-- Popup Modal Dúvidas -->
   <div id="popupModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -98,6 +97,7 @@
     </div>
   </div>
 
+  <!-- Script Simulador Original -->
   <script>
     let dadosR410A = {}, dadosR32 = {}, gramaturas410 = [], gramaturas32 = [];
 
@@ -207,7 +207,7 @@
       if (valor && valor !== "X") {
         if (valor.includes("Atenção") || valor.includes("ATENÇÃO")) {
           cor = "bg-yellow-100 border-yellow-400 text-yellow-700";
-          status = `Atenção <span onclick="abrirPopup('atencao')" class="cursor-pointer">⚠️</span>`;
+          status = `Atenção ⚠️`;
         } else {
           cor = "bg-green-100 border-green-400 text-green-700";
           status = "Compatível";
@@ -224,24 +224,10 @@
         </div>`;
     }
 
-    function abrirPopup(tipo) {
-      const modal = document.getElementById('popupModal');
-      const title = document.getElementById('popupTitle');
-      const content = document.getElementById('popupContent');
-
-      if (tipo === 'duvidas') {
-        title.innerText = 'Dúvidas Frequentes';
-        content.innerHTML = `<p><strong>Bem-vindo à V1 do nosso Simulador MultiSplit!</strong><br>Para utilizar, informe a quantidade de evaporadoras.<br>O sistema mostrará automaticamente as condensadoras compatíveis.<br><br>Em caso de dúvidas ou bugs, entre em contato com o <strong>time de Inteligência Comercial</strong>.</p>`;
-      }
-      modal.classList.remove('hidden');
-    }
-
-    function fecharPopup() {
-      document.getElementById('popupModal').classList.add('hidden');
-    }
+    carregarDados();
   </script>
 
-  <!-- Script Feedback - continuação -->
+  <!-- Script Avaliação -->
   <script>
     const popupFeedback = document.getElementById('popupFeedback');
     const starsContainer = document.getElementById('stars');
@@ -283,7 +269,6 @@
     function showFeedbackPopup() {
       const neverShow = localStorage.getItem('feedbackNeverShow');
       if (neverShow) return;
-      
       const lastFeedbackTime = localStorage.getItem('lastFeedbackTime');
       const now = new Date().getTime();
       if (!lastFeedbackTime || (now - lastFeedbackTime) > (24 * 60 * 60 * 1000)) {
