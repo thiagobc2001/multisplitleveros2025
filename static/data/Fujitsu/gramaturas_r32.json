@@ -1,0 +1,44 @@
+[
+    {
+        "faixa": "18000",
+        "modelo": "ASBG07LMCA",
+        "min": 18000,
+        "max": 24000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "21000",
+        "modelo": "ASBG09LMCA",
+        "min": 21000,
+        "max": 30000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "24000",
+        "modelo": "ASBG12LMCA",
+        "min": 24000,
+        "max": 36000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "30000",
+        "modelo": "ASBG18LFCA",
+        "min": 30000,
+        "max": 48000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "36000",
+        "modelo": "ASBG24LFCA",
+        "min": 36000,
+        "max": 54000,
+        "marca": "Fujitsu"
+    },
+    {
+        "faixa": "48000",
+        "modelo": "Modelo_48k_Fujitsu",
+        "min": 48000,
+        "max": 72000,
+        "marca": "Fujitsu"
+    }
+]

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3ZB9GJXDRP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3ZB9GJXDRP');
+</script>
+
+    <meta charset="UTF-8">
+    <title>Selecionar Fornecedor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-[#003A3F] to-[#007C6D] min-h-screen flex items-center justify-center">
+  <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center">
+    <h1 class="text-3xl font-bold text-[#005A64] mb-6">Simulador Multisplit</h1>
+
+    <form method="POST">
+      <label for="fornecedor" class="block text-left text-[#005A64] font-semibold mb-2">Selecione o fornecedor:</label>
+      <select id="fornecedor" name="fornecedor" class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-6 text-[#005A64] font-medium focus:outline-none focus:ring-2 focus:ring-[#005A64]">
+        {% for fornecedor in fornecedores %}
+          <option value="{{ fornecedor }}">{{ fornecedor }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit" class="bg-[#005A64] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#004B58] transition">
+        Entrar
+      </button>
+    </form>
+
+    <p id="erro" class="text-red-600 font-medium mt-4 hidden">Selecione um fornecedor antes de continuar.</p>
+  </div>
+</body>
+</html>
