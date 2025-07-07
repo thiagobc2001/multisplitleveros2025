@@ -1,41 +1,41 @@
 [
   {
-    "faixa": "30000",
+    "faixa": "18000",
     "modelo": "2MXS18PMVM",
     "min": 18000,
     "max": 30000,
     "marca": "Daikin"
   },
   {
-    "faixa": "30000",
+    "faixa": "18000",
     "modelo": "3MXS18PMVM",
     "min": 18000,
     "max": 30000,
     "marca": "Daikin"
   },
   {
-    "faixa": "39000",
+    "faixa": "24000",
     "modelo": "3MXS24PMVM",
     "min": 24000,
     "max": 39000,
     "marca": "Daikin"
   },
   {
-    "faixa": "51000",
+    "faixa": "28000",
     "modelo": "4MXS28PMVM",
     "min": 28000,
     "max": 51000,
     "marca": "Daikin"
   },
   {
-    "faixa": "54000",
+    "faixa": "34000",
     "modelo": "4MXS34PMVM",
     "min": 34000,
     "max": 54000,
     "marca": "Daikin"
   },
   {
-    "faixa": "54000",
+    "faixa": "38000",
     "modelo": "5MXS38PMVM",
     "min": 38000,
     "max": 54000,
