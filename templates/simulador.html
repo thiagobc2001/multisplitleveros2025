@@ -170,7 +170,12 @@
  function renderizarCards(comb) {
   const container = document.getElementById("cardsFaixaBTU");
   container.innerHTML = "";
-  const combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join(" + ");
+  let combOrdenada;
+if (fornecedor === "Gree") {
+  combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join("+");
+} else {
+  combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join(" + ");
+}
   let faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
   if (fornecedor === "TCL") faixasFixas = ["18000", "27000", "36000"];
   if (fornecedor === "Daikin") faixasFixas = ["30000", "39000", "51000", "54000"];
