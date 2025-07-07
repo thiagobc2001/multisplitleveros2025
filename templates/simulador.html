@@ -198,7 +198,7 @@ if (fornecedor === "Gree") {
   uso = compativel ? "100%" : "X";
 } else if (fornecedor === "Daikin") {
   const combData = dadosR410A?.[combOrdenada];
-  if (combData && combData[faixa]) {
+  if (combData && combData[faixa] && combData[faixa] !== "X") {
     uso = combData[faixa];
   } else {
     uso = "X";
