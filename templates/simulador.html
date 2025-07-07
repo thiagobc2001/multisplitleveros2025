@@ -183,17 +183,22 @@
     const modelos32 = gramaturas32.filter(g => g.faixa === faixa);
     let cards = "";
 
-    modelos410.forEach(gram => {
-      let uso = "X";
-      if (fornecedor === "Gree") {
-        const modeloKey = gram.modelo;
-        const temComb = dadosR410A?.[modeloKey]?.combinações?.hasOwnProperty(combOrdenada);
-        uso = temComb ? "100%" : "X";
-      } else {
-        uso = dadosR410A?.[combOrdenada]?.[faixa] || "X";
-      }
-      cards += gerarSubcard(gram, uso, "R410A");
-    });
+modelos410.forEach(gram => {
+  let uso = "X";
+
+  if (fornecedor === "Gree") {
+    // Gree usa includes no array de combinações
+    const combs = dadosR410A?.[gram.modelo]?.combinações || [];
+    const compativel = combs.includes(combOrdenada);
+    uso = compativel ? "100%" : "X";
+  } else {
+    // Demais fornecedores usam a lógica antiga
+    uso = dadosR410A?.[combOrdenada]?.[faixa] || "X";
+  }
+
+  cards += gerarSubcard(gram, uso, "R410A");
+});
+
 
     modelos32.forEach(gram => {
       const uso = dadosR32?.[combOrdenada]?.[faixa] || "X";
