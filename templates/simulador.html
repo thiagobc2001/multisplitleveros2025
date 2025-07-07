@@ -192,17 +192,20 @@ if (fornecedor === "Gree") {
 modelos410.forEach(gram => {
   let uso = "X";
 
-  if (fornecedor === "Gree") {
-    const combs = dadosR410A?.[gram.modelo]?.combinações || [];
-    const compativel = combs.includes(combOrdenada);
-    uso = compativel ? "100%" : "X";
-  } else if (fornecedor === "Daikin") {
-    const totalBTUs = parseInt(document.getElementById("totalBtus").innerText);
-    const compativel = totalBTUs >= gram.min && totalBTUs <= gram.max;
-    uso = compativel ? "100%" : "X";
+if (fornecedor === "Gree") {
+  const combs = dadosR410A?.[gram.modelo]?.combinações || [];
+  const compativel = combs.includes(combOrdenada);
+  uso = compativel ? "100%" : "X";
+} else if (fornecedor === "Daikin") {
+  const combData = dadosR410A?.[combOrdenada];
+  if (combData && combData[faixa]) {
+    uso = combData[faixa];
   } else {
-    uso = dadosR410A?.[combOrdenada]?.[faixa] || "X";
+    uso = "X";
   }
+} else {
+  uso = dadosR410A?.[combOrdenada]?.[faixa] || "X";
+}
 
   cards += gerarSubcard(gram, uso, "R410A");
 });
