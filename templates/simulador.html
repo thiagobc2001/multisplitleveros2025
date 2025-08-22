@@ -97,7 +97,7 @@
     </div>
   </div>
 
-  <!-- Script Simulador Original -->
+  <!-- Script Simulador -->
   <script>
     let dadosR410A = {}, dadosR32 = {}, gramaturas410 = [], gramaturas32 = [];
 
@@ -167,63 +167,62 @@
       renderizarCards(combinacao);
     }
 
- function renderizarCards(comb) {
-  const container = document.getElementById("cardsFaixaBTU");
-  container.innerHTML = "";
-  let combOrdenada;
-if (fornecedor === "Gree") {
-  combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join("+");
-} else {
-  combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join(" + ");
-}
-  let faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
-  if (fornecedor === "TCL") faixasFixas = ["18000", "27000", "36000"];
-  if (fornecedor === "Daikin") faixasFixas = ["18000", "24000", "28000", "34000", "38000"];
-  if (fornecedor === "Gree") faixasFixas = ["18000", "24000", "30000", "36000", "42000", "48000"];
-  if (fornecedor === "Midea") faixasFixas = ["18000", "27000", "36000", "42000"];
-  if (fornecedor === "Fujitsu") faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
+    function renderizarCards(comb) {
+      const container = document.getElementById("cardsFaixaBTU");
+      container.innerHTML = "";
+      let combOrdenada;
+      if (fornecedor === "Gree") {
+        combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join("+");
+      } else {
+        combOrdenada = comb.split("+").map(e => e.trim()).sort((a,b) => parseInt(a)-parseInt(b)).join(" + ");
+      }
 
-  faixasFixas.forEach(faixa => {
-    const modelos410 = gramaturas410.filter(g => g.faixa === faixa);
-    const modelos32 = gramaturas32.filter(g => g.faixa === faixa);
-    let cards = "";
+      let faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
+      if (fornecedor === "TCL") faixasFixas = ["18000", "27000", "36000"];
+      if (fornecedor === "Daikin") faixasFixas = ["18000", "24000", "28000", "34000", "38000"];
+      if (fornecedor === "Gree") faixasFixas = ["18000", "24000", "30000", "36000", "42000", "48000"];
+      if (fornecedor === "Midea") faixasFixas = ["18000", "27000", "36000", "42000"];
+      if (fornecedor === "Fujitsu") faixasFixas = ["18000", "21000", "24000", "30000", "36000", "48000"];
 
+      faixasFixas.forEach(faixa => {
+        const modelos410 = gramaturas410.filter(g => g.faixa === faixa);
+        const modelos32 = gramaturas32.filter(g => g.faixa === faixa);
+        let cards = "";
 
-modelos410.forEach(gram => {
-  let uso = "X";
+        modelos410.forEach(gram => {
+          let uso = "X";
 
-if (fornecedor === "Gree") {
-  const combs = dadosR410A?.[gram.modelo]?.combinações || [];
-  const compativel = combs.includes(combOrdenada);
-  uso = compativel ? "100%" : "X";
-} else if (fornecedor === "Daikin") {
-  const combData = dadosR410A?.[combOrdenada];
-  if (combData && combData[faixa] && combData[faixa] !== "X") {
-    uso = combData[faixa];
-  } else {
-    uso = "X";
-  }
-} else {
-  uso = dadosR410A?.[combOrdenada]?.[faixa] || "X";
-}
+          if (fornecedor === "Gree") {
+            const combs = dadosR410A?.[gram.modelo]?.combinações || [];
+            const compativel = combs.includes(combOrdenada);
+            uso = compativel ? "100%" : "X"; // mantém regra da Gree
+          } else if (fornecedor === "Daikin") {
+            // Força a exibição "Compatível" sempre que houver chave válida != "X"
+            const combData = dadosR410A?.[combOrdenada];
+            if (combData && combData[faixa] && combData[faixa] !== "X") {
+              uso = "Compatível";
+            } else {
+              uso = "X";
+            }
+          } else {
+            uso = dadosR410A?.[combOrdenada]?.[faixa] || "X";
+          }
 
-  cards += gerarSubcard(gram, uso, "R410A");
-});
+          cards += gerarSubcard(gram, uso, "R410A");
+        });
 
+        modelos32.forEach(gram => {
+          const uso = dadosR32?.[combOrdenada]?.[faixa] || "X";
+          cards += gerarSubcard(gram, uso, "R32");
+        });
 
-    modelos32.forEach(gram => {
-      const uso = dadosR32?.[combOrdenada]?.[faixa] || "X";
-      cards += gerarSubcard(gram, uso, "R32");
-    });
-
-    container.innerHTML += `
-      <div class="card-transition border p-4 rounded-xl bg-white">
-        <h3 class="text-lg font-bold text-[#005A64] mb-3">${faixa} BTUs</h3>
-        <div class="space-y-3">${cards || `<p class='text-sm text-gray-500'>Sem modelos nesta faixa.</p>`}</div>
-      </div>`;
-  });
-}
-
+        container.innerHTML += `
+          <div class="card-transition border p-4 rounded-xl bg-white">
+            <h3 class="text-lg font-bold text-[#005A64] mb-3">${faixa} BTUs</h3>
+            <div class="space-y-3">${cards || `<p class='text-sm text-gray-500'>Sem modelos nesta faixa.</p>`}</div>
+          </div>`;
+      });
+    }
 
     function gerarSubcard(gram, valor, tipo) {
       let cor = "bg-red-100 border-red-400 text-red-700";
@@ -246,6 +245,24 @@ if (fornecedor === "Gree") {
           <p class="text-sm"><strong>Uso:</strong> ${valor || "X"}</p>
           <p class="font-semibold">${status}</p>
         </div>`;
+    }
+
+    // Helpers (caso use)
+    function abrirPopup(tipo) {
+      const modal = document.getElementById('popupModal');
+      const title = document.getElementById('popupTitle');
+      const content = document.getElementById('popupContent');
+      if (tipo === 'duvidas') {
+        title.textContent = 'Dúvidas';
+        content.textContent = 'Selecione as evaporadoras para ver compatibilidade por faixa de BTUs.';
+      }
+      modal.classList.remove('hidden');
+    }
+    function fecharPopup() {
+      document.getElementById('popupModal').classList.add('hidden');
+    }
+    function exportarXLSX() {
+      alert('Exportação para Excel em desenvolvimento.');
     }
 
     carregarDados();
