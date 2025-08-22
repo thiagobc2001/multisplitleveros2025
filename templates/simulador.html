@@ -195,7 +195,7 @@
           if (fornecedor === "Gree") {
             const combs = dadosR410A?.[gram.modelo]?.combinações || [];
             const compativel = combs.includes(combOrdenada);
-            uso = compativel ? "100%" : "X"; // mantém regra da Gree
+            uso = compativel ? "Compatível" : "X"; // mantém regra da Gree
           } else if (fornecedor === "Daikin") {
             // Força a exibição "Compatível" sempre que houver chave válida != "X"
             const combData = dadosR410A?.[combOrdenada];
