@@ -1,11 +1,9 @@
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, session
 from requests_oauthlib import OAuth2Session
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-from datetime import datetime
-import pandas as pd
 
 # ====== FLASK CONFIGURAÇÃO ======
 app = Flask(__name__, static_folder='static')
@@ -29,15 +27,6 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
-
-class Feedback(Base):
-    __tablename__ = 'feedback'
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True)
-    rating = Column(Integer)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-
-Base.metadata.create_all(bind=engine)
 
 # ====== MIDDLEWARE LOGIN ======
 def login_required(view_func):
@@ -113,56 +102,6 @@ def simulador():
 
     caminho_json = f'/static/data/{fornecedor_path}/'
     return render_template('simulador.html', caminho_json=caminho_json, fornecedor=fornecedor, email=session["email"])
-
-@app.route("/submit_feedback", methods=["POST"])
-@login_required
-def submit_feedback():
-    email = session["email"]
-    rating = request.json.get("rating")
-
-    db = SessionLocal()
-    feedback = db.query(Feedback).filter(Feedback.email == email).first()
-    if not feedback:
-        novo_feedback = Feedback(email=email, rating=rating)
-        db.add(novo_feedback)
-        db.commit()
-    db.close()
-    return jsonify({"message": "Feedback registrado!"})
-
-@app.route("/feedback_status")
-@login_required
-def feedback_status():
-    email = session["email"]
-    db = SessionLocal()
-    feedback = db.query(Feedback).filter(Feedback.email == email).first()
-    db.close()
-    if feedback:
-        return jsonify({"has_feedback": True})
-    else:
-        return jsonify({"has_feedback": False})
-
-# ====== EXPORTAR FEEDBACKS EM XLSX (Somente para usuários autorizados) ======
-@app.route("/ver_feedbacks")
-@login_required
-def ver_feedbacks():
-    if session["email"] not in ["thiago.camargo@leveros.com.br", "allan.costa@leveros.com.br"]:
-        return "Acesso não autorizado", 403
-
-    db = SessionLocal()
-    feedbacks = db.query(Feedback).all()
-    db.close()
-
-    data = [{
-        "Email": fb.email,
-        "Nota": fb.rating,
-        "Data": fb.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-    } for fb in feedbacks]
-
-    df = pd.DataFrame(data)
-    file_path = "/tmp/feedbacks.xlsx"
-    df.to_excel(file_path, index=False)
-
-    return send_file(file_path, as_attachment=True)
 
 @app.route("/logout")
 def logout():
